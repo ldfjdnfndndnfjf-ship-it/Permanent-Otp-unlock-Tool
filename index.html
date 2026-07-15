@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp OTP Unlock Tool By Nawab Zada</title>
+    <style>
+        :root {
+            --primary-color: #25D366;
+            --dark-bg: #0b141a;
+            --card-bg: #111b21;
+            --text-light: #e9edef;
+            --text-muted: #8696a0;
+            --accent-color: #00a884;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Tool Lock */
+        #tool-locker {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(11, 20, 26, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: opacity 0.5s ease-out, visibility 0.5s;
+        }
+
+        .locker-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 35px 25px;
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .locker-card h2 {
+            font-size: 28px;
+            color: #ff9800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .locker-card p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+
+        .btn-follow {
+            background-color: var(--primary-color);
+            color: #0b141a;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-follow:hover {
+            background-color: #20ba5a;
+            transform: scale(1.05);
+        }
+
+        /* Blurring the background content when locked */
+        .content-wrapper.locked {
+            filter: blur(5px);
+            pointer-events: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            border: 1px solid #222e35;
+        }
+
+        .banner {
+            background: linear-gradient(135deg, #128C7E, #25D366);
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--accent-color);
+        }
+
+        .banner h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .banner p {
+            color: #d1f4e0;
+            font-size: 14px;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        /* Developer Tag Style */
+        .dev-tag {
+            background-color: rgba(0, 0, 0, 0.3);
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #ff9800;
+            margin-top: 12px;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .method-card {
+            background-color: #182229;
+            border-right: 4px solid var(--primary-color); /* RTL ke liye right */
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px 0 0 8px;
+            text-align: right;
+        }
+
+        .method-card h3 {
+            color: var(--primary-color);
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .method-card p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #d1d7db;
+        }
+
+        /* Special Warning Highlight */
+        .warn-method {
+            background-color: #1d2111;
+            border-right: 4px solid #cddc39;
+        }
+        
+        .warn-method h3 {
+            color: #cddc39;
+        }
+
+        .special-method {
+            background-color: #2a1b15;
+            border-right: 4px solid #ff9800;
+        }
+
+        .special-method h3 {
+            color: #ff9800;
+        }
+
+        .generator-box {
+            background-color: #111b21;
+            border: 1px dashed #374248;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 25px;
+        }
+
+        .generator-box h3 {
+            font-size: 18px;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .input-group input {
+            background-color: #2a3942;
+            border: 1px solid #374248;
+            color: var(--text-light);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+            text-align: left; /* number LTR rahe */
+            direction: ltr;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn-generate {
+            background-color: var(--primary-color);
+            color: #0b141a;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-generate:hover {
+            background-color: #20ba5a;
+            transform: scale(1.02);
+        }
+
+        .output-container {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .output-container label {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 5px;
+            text-align: right;
+        }
+
+        .mail-template {
+            background-color: #182229;
+            border: 1px solid #2a3942;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 13px;
+            color: #e9edef;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            direction: ltr;
+        }
+
+        .btn-copy {
+            background-color: #374248;
+            color: var(--text-light);
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-copy:hover {
+            background-color: #4f5d64;
+        }
+
+        .success-msg {
+            color: var(--primary-color);
+            font-size: 12px;
+            text-align: center;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-top: 1px solid #222e35;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Tool Locker -->
+<div id="tool-locker">
+    <div class="locker-card">
+        <h2>Tool Lock 🔐</h2>
+        <p>Follow My Whatsapp channel to unlock this tool</p>
+        <a href="https://whatsapp.com/channel/0029VbB47ttDDmFNztpnZf2m" target="_blank" class="btn-follow" id="follow-btn">Channel Follow</a>
+    </div>
+</div>
+
+<!-- Main Tool -->
+<div class="container content-wrapper locked" id="main-content">
+    <div class="banner">
+        <h1>WhatsApp OTP Unlock Tool</h1>
+        <p>Whatsapp OTP Unlock Working Solutions</p>
+        <span class="dev-tag">Developer Nawab Zada Hacker ☠️🙌</span>
+    </div>
+
+    <div class="content">
+        <div class="method-card">
+            <h3>Method 01: Clear App Cache, Whatsapp Update & MBl Restart</h3>
+            <p>Sbh se phaly apne phone ki Settings me jayen Apps me ja kr WhatsApp select krun aur "Clear Cache" aur "Clear Data" Kr Dyn. Is k bd Play Store se WhatsApp ko update bhee kr Lyn. Phir mobile ka Flight mode on kr ka Mobile ko AK Barr restart kr dyn, As ka Bd otp send kryn q k network refresh hone se OTP A jata h kabhi.</p>
+        </div>
+
+        <div class="method-card">
+            <h3>Method 02: Switch Device</h3>
+            <p>Agr ap ke mobile py baar-baar try krny se otp nahi a rha  to AK Barr Otp kesi aur mbl pr Official Whatsapp se send kryn. Device change krne se bhee otp ka chance bahoot zeyada brh jaty hyn JB otp a jye to ap Yahan py otp lga ka whatsapp login kr Lyn phr Apne real mbl me asani se Whatsapp login kr skty huo.</p>
+        </div>
+
+        <div class="method-card">
+            <h3>Method 03: SMS se OTP Error</h3>
+            <p>Agr OTP msg py naHi a rha to AK barr call Py send kr ka dakh Lyn, maximum cases me call py OTP fauran a jata h.</p>
+        </div>
+
+        <div class="method-card warn-method">
+            <h3>Method 04: 24 se 48 Hours Wait kryn!</h3>
+            <p>Agr call se bhee OTP na aye, to 24 se 48 Hours ka Lea OTP bilkul na send kry, bar-bar try krny se block limit lg jati h. 48 hours tk sbr kro aur os ka Bd try krna inshallah otp a jye ga.</p>
+        </div>
+
+        <div class="method-card">
+            <h3>Method 05: Official Whatsapp Support</h3>
+            <p>Agr otp lock ya timing issue hy, to niche diye gye apel option me apna number enter kar ke appeal generate kr ka support@support.whatsapp.com ko  send kr dyn. 24 se 48 hours me Whatsapp support team Otp unlock kr deti hy.</p>
+        </div>
+
+        <div class="method-card special-method">
+            <h3>★ Method 06: Duplicate SIM</h3>
+            <p><strong>Agr ap uper wale  sare method use kr chukky hyn to last me ye Wala method try kryn:</strong> Apne network provider ki franchise pr ya os shop pr jyen Jahan sim dublicate nikal ka dyte hyn to ap apne usi nmber ki duplicate SIM nikalwa lyn(Srf 200 se 400 price lgy gy). New SIM active hote hi network refresh ho jaye ga aur inshallah OTP phaly ki trah forri A jye ga.</p>
+        </div>
+
+        <div class="generator-box">
+            <h3>Generate Otp Unlock Appeal</h3>
+            <div class="input-group">
+                <label for="phoneNum">Enter Your WhatsApp Number (With Country Code e.g. +923xxxxxxxxx):</label>
+                <input type="tel" id="phoneNum" placeholder="+923001234567" pattern="^\+[0-9]{10,15}$">
+            </div>
+            <button class="btn-generate" onclick="generateMail()">Generate OTP Unlock Mail</button>
+
+            <div class="output-container" id="outputArea">
+                <label>Send To: <strong>support@support.whatsapp.com</strong></label>
+                <div class="mail-template" id="mailBody"></div>
+                <button class="btn-copy" onclick="copyMailText()">Copy Mail</button>
+                <div class="success-msg" id="successTxt">Copied successfully! Now send it to WhatsApp support.</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Developed by Nawab Zada | All Rights Reserved © 2026
+        </div>
+    </div>
+</div>
+
+<script>
+    // Variable to track if the user clicked the follow link
+    let isFollowClicked = false;
+
+    // Detect click on the follow button
+    document.getElementById('follow-btn').addEventListener('click', function() {
+        isFollowClicked = true;
+    });
+
+    // Detect when user returns to this page/tab and auto-unlock
+    window.addEventListener('focus', function() {
+        if (isFollowClicked) {
+            unlockTool();
+        }
+    });
+
+    function unlockTool() {
+        const locker = document.getElementById('tool-locker');
+        const mainContent = document.getElementById('main-content');
+        
+        // Hide Locker with transition
+        locker.style.opacity = '0';
+        locker.style.visibility = 'hidden';
+        
+        // Remove blur and lock constraints from main content
+        mainContent.classList.remove('locked');
+        
+        // Clean cleanup after animations
+        setTimeout(() => {
+            locker.style.display = 'none';
+        }, 500);
+    }
+
+    function generateMail() {
+        const num = document.getElementById('phoneNum').value.trim();
+        if(!num || !num.startsWith('+')) {
+            alert('Jani, pehle number enter karo! Format: +923001234567');
+            return;
+        }
+
+        const template = `Subject: Urgent - OTP Verification Code Not Received
+
+Dear WhatsApp Support Team,
+
+I am writing to report a critical issue with my WhatsApp account verification. I am unable to receive the One-Time Password (OTP) verification code on my registered mobile number. 
+
+Every time I try to request a code, it displays a timeout lock on the screen. This is my active, official personal number.
+
+I kindly request you to manually reset my verification limit/cooldown timer from your end so I can successfully login back into my account.
+
+My Registered Mobile Number: ${num}
+
+I look forward to your urgent assistance.
+
+Best Regards,
+[NAWAB ZADA HACKER]`;
+
+        document.getElementById('mailBody').innerText = template;
+        document.getElementById('outputArea').style.display = 'block';
+        document.getElementById('successTxt').style.display = 'none';
+        window.scrollTo({ top: document.getElementById('outputArea').offsetTop, behavior: 'smooth' });
+    }
+
+    function copyMailText() {
+        const mailText = document.getElementById('mailBody').innerText;
+        navigator.clipboard.writeText(mailText).then(() => {
+            const success = document.getElementById('successTxt');
+            success.style.display = 'block';
+            setTimeout(() => {
+                success.style.display = 'none';
+            }, 3000);
+        }).catch(err => {
+            alert('Failed to copy. Please select manually.');
+        });
+    }
+</script>
+
+</body>
+</html>
